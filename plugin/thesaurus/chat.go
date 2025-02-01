@@ -178,7 +178,7 @@ func init() {
 		engine.OnMessage(canmatch(tKAWA), match(chatListK, seg)).
 			SetBlock(false).
 			Handle(randreply(sm.K))
-		engine.OnMessage(canmatch(tALPACA), func(ctx *zero.Ctx) bool {
+		engine.OnMessage(canmatch(tALPACA), func(_ *zero.Ctx) bool {
 			return alpacapiurl != "" && alpacatoken != ""
 		}).SetBlock(false).Handle(func(ctx *zero.Ctx) {
 			msg := ctx.ExtractPlainText()
@@ -287,6 +287,9 @@ func randreply(m map[string][]string) zero.Handler {
 		text = strings.ReplaceAll(text, "{me}", nick)
 		id := ctx.Event.MessageID
 		for _, t := range strings.Split(text, "{segment}") {
+			if t == "" {
+				continue
+			}
 			process.SleepAbout1sTo2s()
 			id = ctx.SendChain(message.Reply(id), message.Text(t))
 		}
